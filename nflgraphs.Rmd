@@ -1,0 +1,90 @@
+---
+title: "nflpa"
+author: "Srujana Yalamanchili"
+date: "2024-11-04"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+NFL_DATA <- read.csv("NFLdata.csv")
+colnames(NFL_DATA)
+Middle50 <- subset(NFL_DATA$APY,NFL_DATA$APY>1033648&NFL_DATA$APY<4000000)
+```
+```{r}
+TG<-subset(NFL_DATA$TotalGuaranteed,NFL_DATA$TotalGuaranteed>0&NFL_DATA$TotalGuaranteed<230000000)
+```
+
+```{r}
+middle50TG<-subset(NFL_DATA$TotalGuaranteed,NFL_DATA$TotalGuaranteed>115980&NFL_DATA$TotalGuaranteed<7000000)
+
+```
+
+```{r}
+head(NFL_DATA)
+as.numeric(NFL_DATA$APY)
+quantile(NFL_DATA$APY,probs = 0.25, na.rm = TRUE)
+quantile(NFL_DATA$APY,probs = 0.75, na.rm = TRUE)
+quantile(NFL_DATA$APY,probs = 0.50, na.rm = TRUE)
+```
+
+
+```{r}
+fivepercent<-five<-subset(NFL_DATA$TotalGuaranteed,NFL_DATA$TotalGuaranteed>500000&NFL_DATA$TotalGuaranteed<5000000)
+quantile(NFL_DATA$TotalGuaranteed,probs=0.75, na.rm = TRUE)
+quantile(NFL_DATA$TotalGuaranteed,probs=0.50, na.rm = TRUE)
+```
+
+```{r}
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+nfl_data1 <- NFL_DATA %>% rename(percent_gt = "Percent_Guaranteed")
+```
+
+```{r}
+scatter_nfl <- ggplot(nfl_data1, aes(x = percent_gt, y = APY))
+scatter_nfl + geom_point()
+```
+```{r}
+scatter_nfl + geom_point() + ylim(0,4e+06) 
+```
+
+```{r}
+library(patchwork)
+percent25 <- scatter_nfl + geom_point() + ylim(1e+06,4e+06
+) + xlim(0, 0.25)
+percent50 <- scatter_nfl + geom_point() + ylim(1e+06,4e+06
+) + xlim(0.25, 0.50)
+percent75 <- scatter_nfl + geom_point() + ylim(1e+06,4e+06
+) + xlim(0.50, 0.75)
+percent100 <- scatter_nfl + geom_point() + ylim(1e+06,4e+06
+) + xlim(0.75, 1)
+
+percent25 + percent50
+```
+
+```{r}
+percent75 + percent100
+```
+
+```{r}
+quantile(nfl_data1$percent_gt, probs = 0.25, na.rm = TRUE)
+quantile(nfl_data1$percent_gt, probs = 0.50, na.rm = TRUE)
+quantile(nfl_data1$percent_gt, probs = 0.75, na.rm = TRUE)
+```
+
+
+```{r}
+apytgavg <- ggplot(nfl_data1, aes(x = AVGGuranteeYear, y = APY)) 
+apytgavg + geom_point() + xlim(0, 1e+07) + ylim(0, 4e+07)
+```
+```{r}
+quantile(nfl_data1$AVGGuranteeYear, probs = 0.25, na.rm = TRUE)
+quantile(nfl_data1$AVGGuranteeYear, probs = 0.50, na.rm = TRUE)
+quantile(nfl_data1$AVGGuranteeYear, probs = 0.75, na.rm = TRUE)
+```
+
